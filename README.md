@@ -32,7 +32,8 @@ docker run --rm \
   -p 127.0.0.1:8888:8888 \
   --add-host test.company.com:10.x.x.x \
   hagb/docker-easyconnect:7.6.7
-###2. Clash Verge (TUN Mode) Rule Setup
+
+### 2. Clash Verge (TUN Mode) Rule Setup
 Add the following rules to the top of your proxy rule list in Clash Verge:
 
 YAML
