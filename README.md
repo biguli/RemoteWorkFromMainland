@@ -32,11 +32,11 @@ docker run --rm \
   -p 127.0.0.1:8888:8888 \
   --add-host test.company.com:10.x.x.x \
   hagb/docker-easyconnect:7.6.7
-2. Clash Verge (TUN Mode) Rule Setup
+###2. Clash Verge (TUN Mode) Rule Setup
 Add the following rules to the top of your proxy rule list in Clash Verge:
 
 YAML
-rules:
+```rules:
   - DOMAIN-SUFFIX,docker.com,PROXY
   - PROCESS-NAME,com.docker.backend.exe,DIRECT
   - DOMAIN-SUFFIX,company.com,easyconnect
@@ -54,7 +54,7 @@ An earlier configuration attempted to bypass the VPN server endpoint while routi
 
 YAML
 # ❌ Flawed Rule Setup
-rules:
+```rules:
   - DOMAIN,vpn.company.com,DIRECT
   - DOMAIN-SUFFIX,company.com,easyconnect
 Under this setup, raw IP traffic or non-standard outbound connections originating from the VPN container were captured back by Clash's TUN interface. This generated a recursive traffic loop (Traffic Storm), spawning tens of thousands of active socket connections, exhausting the host's Windows ephemeral port pool, and completely severing network connectivity.
