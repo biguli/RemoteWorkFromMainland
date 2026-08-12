@@ -22,6 +22,8 @@ Working remotely within Mainland China presents unique challenges, from network 
 
 To keep the intrusive enterprise VPN client contained, run EasyConnect inside Docker:
 
+> 💡 **Tip:** If your intranet services require custom corporate domain resolution, pass them directly into the container using `--add-host hostname:ip`.
+
 ```bash
 docker run --rm \
   --device /dev/net/tun \
@@ -80,3 +82,5 @@ By configuring the entire Docker backend process (`com.docker.backend.exe`) to `
 Contributions, local tips, and PRs are welcome! Feel free to open an issue to submit your favorite mainland WFH workflow or hardware setup.
 
 ## 📄 License
+
+MIT License
