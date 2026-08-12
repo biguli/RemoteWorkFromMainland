@@ -17,6 +17,8 @@ Working remotely within Mainland China presents unique challenges, from network 
 - **Docker Desktop:** Integrated with default WSL distro
 - **Global Proxy (`PROXY`):** VLESS node managed via [`3x-ui`](https://github.com/MHSanaei/3x-ui) on a US VPS (for GitHub and global web traffic)
 - **Company VPN (`easyconnect`):** Containerized Sangfor EasyConnect client via [`docker-easyconnect`](https://github.com/docker-easyconnect/docker-easyconnect) providing a local SOCKS5 proxy at `127.0.0.1:1080`
+- 
+> 📄 **Configuration Reference:** You can check the complete routing configuration example in [`Clash.yaml`](./Clash.yaml).
 
 ### 1. Isolated VPN Container Setup
 
@@ -76,6 +78,14 @@ Under this setup, raw IP traffic or non-standard outbound connections originatin
 By configuring the entire Docker backend process (`com.docker.backend.exe`) to `DIRECT`, container traffic bypasses the host TUN interface entirely. This completely eliminates recursive loops while preserving precise split tunneling.
 
 ---
+## 🎯 Results & Impact
+Once configured, all network routes operate concurrently and seamlessly across both the host OS (Windows) and vitrual environments (WSL / Docker containers):
+
+- **Company Intranet:** Directly accessible via containerized EasyConnect proxy.
+
+- **Mainland China Websites & Services:** Directly routed (DIRECT) for maximum speed and ultra-low latency.
+
+- **Global Web & Developer Tools (GitHub, Docker Hub, OpenAI):** Smoothly routed via global proxy node (PROXY).
 
 ## 🤝 Contributing
 
