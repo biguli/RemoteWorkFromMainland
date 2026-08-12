@@ -3,6 +3,7 @@
 A practical guide to seamlessly and securely working remotely from Mainland China on a personal PC.
 
 ## 🚀 Overview
+
 Working remotely within Mainland China presents unique challenges, from network routing and localized software ecosystems to data compliance and personal-to-work isolation. This repository provides actionable workflows and battle-tested solutions to optimize your WFH environment.
 
 ---
@@ -10,6 +11,7 @@ Working remotely within Mainland China presents unique challenges, from network 
 ## 🛠️ Case Study: Dual-Proxy Architecture & Routing Optimization
 
 ### Environment Setup
+
 - **Host OS:** Windows 11 Home (Chinese)
 - **WSL:** Ubuntu (NAT Network Mode)
 - **Docker Desktop:** Integrated with default WSL distro
@@ -17,6 +19,7 @@ Working remotely within Mainland China presents unique challenges, from network 
 - **Company VPN (`easyconnect`):** Containerized Sangfor EasyConnect client via [`docker-easyconnect`](https://github.com/docker-easyconnect/docker-easyconnect) providing a local SOCKS5 proxy at `127.0.0.1:1080`
 
 ### 1. Isolated VPN Container Setup
+
 To keep the intrusive enterprise VPN client contained, run EasyConnect inside Docker:
 
 ```bash
@@ -32,39 +35,48 @@ docker run --rm \
   -p 127.0.0.1:8888:8888 \
   --add-host test.company.com:10.x.x.x \
   hagb/docker-easyconnect:7.6.7
+```
 
 ### 2. Clash Verge (TUN Mode) Rule Setup
+
 Add the following rules to the top of your proxy rule list in Clash Verge:
 
-YAML
-```rules:
+```yaml
+rules:
   - DOMAIN-SUFFIX,docker.com,PROXY
   - PROCESS-NAME,com.docker.backend.exe,DIRECT
   - DOMAIN-SUFFIX,company.com,easyconnect
-Rule Breakdown:
+```
 
-*.docker.com: Explicitly routed via PROXY so image pulls bypass local restrictions.
+#### Rule Breakdown
 
-com.docker.backend.exe: Strictly set to DIRECT to ensure all Docker internal traffic bypasses Clash's TUN interface.
+- `*.docker.com`: Explicitly routed via `PROXY` so image pulls bypass local restrictions.
+- `com.docker.backend.exe`: Strictly set to `DIRECT` to ensure all Docker internal traffic bypasses Clash's TUN interface.
+- `*.company.com`: Internal company domains route seamlessly through the local easyconnect SOCKS5 proxy.
 
-*.company.com: Internal company domains route seamlessly through the local easyconnect SOCKS5 proxy.
+### ⚠️ Pitfall & Lesson Learned: Resolving Traffic Loops
 
-⚠️ Pitfall & Lesson Learned: Resolving Traffic Loops
-The Problem
+#### The Problem
+
 An earlier configuration attempted to bypass the VPN server endpoint while routing other company traffic:
 
-YAML
+```yaml
 # ❌ Flawed Rule Setup
-```rules:
+rules:
   - DOMAIN,vpn.company.com,DIRECT
   - DOMAIN-SUFFIX,company.com,easyconnect
-Under this setup, raw IP traffic or non-standard outbound connections originating from the VPN container were captured back by Clash's TUN interface. This generated a recursive traffic loop (Traffic Storm), spawning tens of thousands of active socket connections, exhausting the host's Windows ephemeral port pool, and completely severing network connectivity.
+```
 
-The Fix
-By configuring the entire Docker backend process (com.docker.backend.exe) to DIRECT, container traffic bypasses the host TUN interface entirely. This completely eliminates recursive loops while preserving precise split tunneling.
+Under this setup, raw IP traffic or non-standard outbound connections originating from the VPN container were captured back by Clash's TUN interface. This generated a recursive traffic loop (**Traffic Storm**), spawning tens of thousands of active socket connections, exhausting the host's Windows ephemeral port pool, and completely severing network connectivity.
 
-🤝 Contributing
+#### The Fix
+
+By configuring the entire Docker backend process (`com.docker.backend.exe`) to `DIRECT`, container traffic bypasses the host TUN interface entirely. This completely eliminates recursive loops while preserving precise split tunneling.
+
+---
+
+## 🤝 Contributing
+
 Contributions, local tips, and PRs are welcome! Feel free to open an issue to submit your favorite mainland WFH workflow or hardware setup.
 
-📄 License
-MIT License
+## 📄 License
