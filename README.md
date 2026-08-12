@@ -17,7 +17,7 @@ Working remotely within Mainland China presents unique challenges, from network 
 - **Docker Desktop:** Integrated with default WSL distro
 - **Global Proxy (`PROXY`):** VLESS node managed via [`3x-ui`](https://github.com/MHSanaei/3x-ui) on a US VPS (for GitHub and global web traffic)
 - **Company VPN (`easyconnect`):** Containerized Sangfor EasyConnect client via [`docker-easyconnect`](https://github.com/docker-easyconnect/docker-easyconnect) providing a local SOCKS5 proxy at `127.0.0.1:1080`
-- 
+
 > 📄 **Configuration Reference:** You can check the complete routing configuration example in [`Clash.yaml`](./Clash.yaml).
 
 ### 1. Isolated VPN Container Setup
